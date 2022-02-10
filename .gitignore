@@ -6,6 +6,7 @@
 /client/.pnp.js
 
 
+
 # testing
 /client/coverage
 
@@ -13,6 +14,7 @@
 /client/build
 
 # misc
+/server/config/config.env
 /client/.DS_Store
 /client/.env.local
 /client/.env.development.local

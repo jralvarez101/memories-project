@@ -3,8 +3,12 @@ const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db.js');
 const cors = require('cors');
+const postRoutes = require('./routes/posts.js');
 
 const app = express();
+
+// setup routes
+app.use('/posts', postRoutes);
 
 // load config file
 dotenv.config({ path: './config/config.env' });
