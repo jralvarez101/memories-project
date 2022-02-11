@@ -10,7 +10,7 @@ function Posts() {
   const posts = useSelector((state) => state.posts);
 
   const classes = useStyles();
-  return !posts.lengt ? (
+  return !posts.length ? (
     <CircularProgress />
   ) : (
     <Grid
