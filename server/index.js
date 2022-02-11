@@ -7,6 +7,9 @@ const postRoutes = require('./routes/posts.js');
 
 const app = express();
 
+// for the images & other info
+app.use(bodyParser.json({ limit: '30mb', extended: true }));
+app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }));
 // to solve cors issues
 app.use(cors());
 
@@ -15,11 +18,6 @@ app.use('/posts', postRoutes);
 
 // load config file
 dotenv.config({ path: './config/config.env' });
-
-// for the images & other info
-app.use(bodyParser.json({ limit: '30mb', extended: true }));
-app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }));
-app.use(cors());
 
 // connect to mongoDB
 connectDB();
