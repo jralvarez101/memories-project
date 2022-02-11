@@ -7,6 +7,9 @@ const postRoutes = require('./routes/posts.js');
 
 const app = express();
 
+// to solve cors issues
+app.use(cors());
+
 // setup routes
 app.use('/posts', postRoutes);
 
