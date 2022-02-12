@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const PostMessage = require('../models/postMessage.js');
 const { post } = require('../routes/posts');
 
@@ -22,10 +23,26 @@ const createPost = async (req, res) => {
   try {
     // save the new post that was created into the database
     await newPost.save();
+    // then we send this info to the request which was done on the front-end
     res.status(201).json(newPost);
   } catch (error) {
     res.status(409).send({ message: error.message });
   }
 };
 
-module.exports = { getPosts, createPost };
+const updatePost = async (req, res) => {
+  // we will use the mongoose _id
+  const { id } = req.params;
+  const { title, message, creator, selectedFile, tags } = req.body;
+  // then we verify that the _id is valid and exists in the database
+  if (!mongoose.Types.ObjectId.isValid(id))
+    return res.status(404).send(`No post with id: ${id}`);
+
+  // if valid just locate the id and update it {new:true} to receive updated version of the post
+  const updatedPost = { creator, title, message, tags, selectedFile, _id: id };
+  await PostMessage.findByIdAndUpdate(id, updatedPost, { new: true });
+  // then we send this info to the request that was done on the front-end
+  res.json(updatedPost);
+};
+
+module.exports = { getPosts, createPost, updatePost };

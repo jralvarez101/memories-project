@@ -1,13 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import useStyles from './styles';
 import FileBase from 'react-file-base64';
 import { TextField, Button, Typography, Paper } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 // we will dispatch this function
-import { createPost } from '../../actions/posts';
+import { createPost, updatePost } from '../../actions/posts';
 
-function Form() {
+function Form({ currentId, setCurrentId }) {
+  // get the state to fill the input values when updating a post (find only that post)
+  const post = useSelector((state) =>
+    currentId ? state.posts.find((message) => message._id === currentId) : null
+  );
+
   const classes = useStyles();
   const [postData, setPostData] = useState({
     creator: '',
@@ -18,11 +23,35 @@ function Form() {
   });
   const dispatch = useDispatch();
 
+  // to populate the form if updating a post
+  useEffect(() => {
+    if (post) {
+      setPostData(post);
+    }
+  }, [post]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(createPost(postData));
+    // check if there is a current id present (meaning the post already exists in the database)
+    if (currentId) {
+      dispatch(updatePost(currentId, postData));
+    } else {
+      // if we dont have a currentId it must mean we are creating a post & not updating it
+      dispatch(createPost(postData));
+    }
+    clear();
   };
-  const clear = () => {};
+
+  const clear = () => {
+    setCurrentId(0);
+    setPostData({
+      creator: '',
+      title: '',
+      message: '',
+      tags: '',
+      selectedFile: '',
+    });
+  };
 
   return (
     <Paper className={classes.paper}>
@@ -32,7 +61,9 @@ function Form() {
         className={`${classes.root} ${classes.form}`}
         onSubmit={handleSubmit}
       >
-        <Typography variant="h6">Creating a Memory</Typography>
+        <Typography variant="h6">
+          {currentId ? `Editing "${post.title}"` : 'Creating a Memory'}
+        </Typography>
         <TextField
           name="creator"
           variant="outlined"
