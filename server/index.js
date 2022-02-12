@@ -16,6 +16,10 @@ app.use(cors());
 // setup routes
 app.use('/posts', postRoutes);
 
+app.get('/', (req, res) => {
+  res.send('Hello to Memories API');
+});
+
 // load config file
 dotenv.config({ path: './config/config.env' });
 
